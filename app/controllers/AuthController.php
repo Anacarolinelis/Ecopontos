@@ -18,6 +18,7 @@ class AuthController
         $userData = $user->getByUsername($username);
 
         if ($userData && password_verify($password, $userData['password'])) {
+            // Salva o usuário na sessão
             $_SESSION['user'] = [
                 'id' => $userData['id'],
                 'username' => $userData['username']
@@ -36,5 +37,24 @@ class AuthController
         session_destroy();
         header('Location: /login');
         exit;
+    }
+
+    public function showLoginForm()
+    {
+        // Exibe um formulário básico para testes
+        $error = $_SESSION['error'] ?? '';
+        unset($_SESSION['error']);
+
+        echo '
+            <h2>Login</h2>
+            ' . ($error ? "<p style='color:red;'>$error</p>" : '') . '
+            <form method="POST" action="/login">
+                <label>Usuário:</label><br>
+                <input type="text" name="username"><br><br>
+                <label>Senha:</label><br>
+                <input type="password" name="password"><br><br>
+                <button type="submit">Entrar</button>
+            </form>
+        ';
     }
 }
